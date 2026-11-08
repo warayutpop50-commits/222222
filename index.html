@@ -44,6 +44,7 @@ bf.forEach((b,bi)=>{const c=W2(b[0],b[1]);b.c=c;
  for(let i=0;i<260;i++){const side=i%2?1:-1,up=rnd()<.62,u=.08+rnd()*.92,hh=(up?.38:.24)*Math.sin(Math.PI*(.1+.9*u)),v=(up?.28:-.3)*(.4+u*.6)+(rnd()*2-1)*hh;
   P.push({bf:b,bi,u,v,side,k:3,o:.72+bi*.06+rnd()*.04})}
  for(let i=0;i<14;i++)P.push({bf:b,bi,u:0,v:(i/14-.5)*.8,side:0,k:3,o:.72+bi*.06})});
+const FALL=Array.from({length:90},()=>({x:(rnd()*2-1)*.95,sp:.12+rnd()*.18,ph:rnd()*20,sw:.05+rnd()*.1,sz:rnd()}));
 const RAMP="il1tfrxnuvczXYUJCLQ0OZmwqpdbkhao#MW&8%B@$";
 const norm=v=>{const l=Math.hypot(...v)||1;return v.map(x=>x/l)};
 function resize(){const d=devicePixelRatio||1;cv.width=cv.clientWidth*d;cv.height=cv.clientHeight*d;ctx.setTransform(d,0,0,d,0,0)}
@@ -74,6 +75,10 @@ function frame(now){
     if(p.k===0)L*=.7;
     if(g>.6)glints++;
     out.push({sx:ox+x*S,sy:oy-Y*S,z,L:Math.min(1,L)*fade*age,g,k:p.k})}
+  if(draw>.85){const fa=Math.min(1,(draw-.85)*8)*fade;
+    for(const f of FALL){const y=3.3-((t*f.sp+f.ph)%3.4),x=f.x+Math.sin(t*.8+f.ph)*f.sw*3,tum=Math.abs(Math.sin(t*1.7+f.ph*3)),th=t*1.3+f.ph;
+      const L=(.35+.65*tum)*fa*(y<.15?Math.max(0,y/.15):1);
+      for(let j=-1;j<=1;j++)out.push({sx:ox+x*c*S+Math.cos(th)*j*3*(.4+tum),sy:oy-y*S+Math.sin(th)*j*3*(.4+tum),z:f.sz-.5,L:L*(j?.7:1),g:0,k:f.sz>.85?2:1})}}
   out.sort((a,b)=>a.z-b.z);
   ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='8px ui-monospace,Menlo,monospace';
   for(const q of out){
